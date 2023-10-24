@@ -130,6 +130,20 @@ function Mahasiswa(){
             setValidation(error.response.data);
         }
     };
+
+    const handleDelete = (id_m) => {
+      axios
+        .delete(`http://localhost:3000/api/mhs/delete/${id_m}`)
+        .then((response) => {
+            console.log('Data berhasil dihapus');
+            const updateMhs = mhs.filter((item) => item.id_m !== id_m);
+            setMhs(updateMhs);
+        }) 
+        .catch((error) => {
+            console.error('Gagal Menghapus Data:', error);
+            alert('Gagal menghapus data. Silahkan coba lagi atau hubungi administrator.');
+        });
+    };
     return(
         <Container>
             <Modal show={show} onHide={handleClose}>
@@ -246,8 +260,9 @@ function Mahasiswa(){
                             <th scope="col">Nama</th>
                             <th scope="col">NRP</th>
                             <th scope="col">Jurusan</th>
-                            <th scope="col">gambar</th>
-                            <th scope="col">gambar</th>
+                            <th scope="col">Gambar</th>
+                            <th scope="col">Gambar</th>
+                            <th scope="col" colSpan={2}>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -265,6 +280,9 @@ function Mahasiswa(){
                                 </td>
                                 <td>
                                 <button onClick={() => handleShowEditModal(mh)} className='btn btn-sm btn-info'> Edit </button>
+                                </td>
+                                <td> 
+                                <button onClick={() => handleDelete(mh.id_m)} className='btn btn-sm btn-danger' >Hapus</button>
                                 </td>
                             </tr>   
                         ))}
