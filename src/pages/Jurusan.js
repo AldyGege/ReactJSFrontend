@@ -21,7 +21,10 @@ function Jurusan() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/jurusan");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const response = await axios.get("http://localhost:3000/api/jurusan", {headers});
       const data = await response.data.data;
       setJrsn(data);
     } catch (error) {
@@ -92,6 +95,8 @@ function Jurusan() {
     await axios.patch(`http://localhost:3000/api/jurusan/update/${editData.id_j}`, formData, {
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            
         },
     });
     navigate('/jurusan');
@@ -105,9 +110,12 @@ function Jurusan() {
 
   const handleDelete = (id_j) => {
     console.log("Trying to delete data with ID:", id_j);
-
     axios
-      .delete(`http://localhost:3000/api/jurusan/delete/${id_j}`)
+      .delete(`http://localhost:3000/api/jurusan/delete/${id_j}`,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+      })
       .then((response) => {
         console.log("Data berhasil dihapus");
         const updatedJrs = jrs.filter((item) => item.id_j !== id_j);
