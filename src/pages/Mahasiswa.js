@@ -1,7 +1,10 @@
 import { Container, Row , Col, Button, Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+
+const token = localStorage.getItem('token');
+
 function Mahasiswa(){
     const [mhs, setMhs] = useState([]);
     const [jrs, setJrs] = useState([]);
@@ -11,14 +14,20 @@ function Mahasiswa(){
     fectData();
     }, []);
     const fectData = async () =>{
-    const response1 = await axios.get('http://localhost:3000/api/mhs');
-    const data1 = await response1.data.data;
+      try{
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+    const response1 = await axios.get('http://localhost:3000/api/mhs', {headers});
+    const response2 = await axios.get('http://localhost:3000/api/jurusan', {headers});
+    const data1 = response1.data.data;
+    const data2 = response2.data.data;
     setMhs(data1);
-
-    const response2 = await axios.get('http://localhost:3000/api/jurusan');
-    const data2 = await response2.data.data;
     setJrs(data2);
-    }
+  }catch(error){
+      console.error('Gagal Mengambil Data :', error)
+  }
+    };
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -63,6 +72,7 @@ function Mahasiswa(){
             await axios.post('http://localhost:3000/api/mhs/store', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization' : `Bearer ${token}`,
                 },
             });
             navigate('/mhs');
@@ -120,6 +130,7 @@ function Mahasiswa(){
             await axios.patch(`http://localhost:3000/api/mhs/update/${editData.id_m}`, formData, {
                headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`,
                },
             });
             navigate('/mhs');
@@ -133,7 +144,11 @@ function Mahasiswa(){
 
     const handleDelete = (id_m) => {
       axios
-        .delete(`http://localhost:3000/api/mhs/delete/${id_m}`)
+        .delete(`http://localhost:3000/api/mhs/delete/${id_m}`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        })
         .then((response) => {
             console.log('Data berhasil dihapus');
             const updateMhs = mhs.filter((item) => item.id_m !== id_m);

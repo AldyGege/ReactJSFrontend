@@ -4,6 +4,10 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 
+const token = localStorage.getItem('token')
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+
 function Jurusan() {
   const [jrs, setJrsn] = useState([]);
   const [show, setShow] = useState(false);
